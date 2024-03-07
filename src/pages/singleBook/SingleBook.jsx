@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import { useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 
 const SingleBook = () => {
   const {id} = useParams()
   const [book,setBook] = useState({})
+  const navigate = useNavigate() 
   const fetchBook = async ()=>{
-    const response = await axios.get(`https://mern2-0-backend.onrender.com/book/${id}`) 
+    const response = await axios.get(`http://localhost:3000/book/${id}`) 
     if(response.status === 200){
       setBook(response.data.data)
     }
@@ -15,7 +16,14 @@ const SingleBook = () => {
   useEffect(()=>{
     fetchBook()
   },[])
+//delete pass
+const handleDelete = async () =>{
+        console.log(id)
+        const response = await axios.delete(`http://localhost:3000/book/${id}`)
+        navigate("/")
+        console.log(response)
 
+}
   return (
     <>
     <Navbar />
@@ -37,7 +45,11 @@ const SingleBook = () => {
       {book.publishedAt}
       
     </p>
-    <button className='bg-blue-300 p-2'>Delete</button>
+    <button onClick={handleDelete} className='bg-blue-300 p-2'>Delete</button>
+   
+    <Link to={`/editBook/${book._id}`} >
+    <button className='bg-blue-300 p-2 ml-2'>Edit</button>
+    </Link>
   </div>
     </>
   )
